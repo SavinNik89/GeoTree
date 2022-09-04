@@ -1,0 +1,5 @@
+package relation;
+
+public enum FindTypeRelation {
+    PARENTS, CHILDREN, GRANDPARENTS, UNCLESANDAUNTS, BROTHERSANDSISTERS, COUSINS
+}
