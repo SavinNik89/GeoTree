@@ -23,12 +23,12 @@ public class Research {
                     }
                 }
                 if (findTypeRelation == FindTypeRelation.PARENTS) {
-                    if (relation.directRelationType == RelationType.SUN || relation.directRelationType == RelationType.DAUGHTER) {
+                    if (relation.directRelationType == RelationType.SON || relation.directRelationType == RelationType.DAUGHTER) {
                         result.put(relation.inRelationToPerson, relation.reverseRelationType);
                     }
                 }
                 if (findTypeRelation == FindTypeRelation.BROTHERSANDSISTERS) {
-                    if (relation.directRelationType == RelationType.SUN || relation.directRelationType == RelationType.DAUGHTER) {
+                    if (relation.directRelationType == RelationType.SON || relation.directRelationType == RelationType.DAUGHTER) {
                         HashMap <Person, RelationType> temp = findNearRelatives(relation.inRelationToPerson.getFirstName(),
                                 relation.inRelationToPerson.getSecondName(), FindTypeRelation.CHILDREN);
                         for (HashMap.Entry<Person, RelationType> recordTemp : temp.entrySet()) {
@@ -47,7 +47,7 @@ public class Research {
                 }
 
                 if (findTypeRelation == FindTypeRelation.GRANDPARENTS) {
-                    if (relation.directRelationType == RelationType.SUN || relation.directRelationType == RelationType.DAUGHTER) {
+                    if (relation.directRelationType == RelationType.SON || relation.directRelationType == RelationType.DAUGHTER) {
                         HashMap <Person, RelationType> temp = findNearRelatives(relation.inRelationToPerson.getFirstName(),
                                 relation.inRelationToPerson.getSecondName(), FindTypeRelation.PARENTS);
                         for (HashMap.Entry<Person, RelationType> recordTemp : temp.entrySet()) {
@@ -56,9 +56,25 @@ public class Research {
                                 } else {
                                     result.put(recordTemp.getKey(), RelationType.GRANDMOTHER);
                                 }
-                            }
                         }
                     }
+                }
+
+                if (findTypeRelation == FindTypeRelation.COUSINS) {
+                    if (relation.directRelationType == RelationType.SON || relation.directRelationType == RelationType.DAUGHTER) {
+                        HashMap <Person, RelationType> temp1 = findNearRelatives(relation.inRelationToPerson.getFirstName(),
+                                relation.inRelationToPerson.getSecondName(), FindTypeRelation.BROTHERSANDSISTERS);
+                        HashMap <Person, RelationType> temp2 = new HashMap<>();
+                        for (HashMap.Entry<Person, RelationType> recordTemp1 : temp1.entrySet()) {
+                            HashMap <Person, RelationType> temp3 = findNearRelatives(recordTemp1.getKey().getFirstName(),
+                                    recordTemp1.getKey().getSecondName(), FindTypeRelation.CHILDREN);
+                            temp2.putAll(temp3);
+                        }
+                        for (HashMap.Entry<Person, RelationType> recordTemp2 : temp2.entrySet()) {
+                            result.put(recordTemp2.getKey(), RelationType.COUSIN);
+                        }
+                    }
+                }
             }
         }
         return result;
@@ -69,7 +85,7 @@ public class Research {
     public static void printNearRelatives (Research relatives, String firstName, String secondName, FindTypeRelation findTypeRelation) {
         int i = 1;
         HashMap<Person, RelationType> relativesMap = relatives.findNearRelatives(firstName, secondName, findTypeRelation);
-        System.out.println("List of " + findTypeRelation +':');
+        System.out.println("List of " + findTypeRelation + " for " + firstName + ' ' + secondName + ':');
         for (HashMap.Entry<Person, RelationType> relation : relativesMap.entrySet()) {
             System.out.printf("%d. %s - %s;\n", i, relation.getKey(), relation.getValue());
             i++;
